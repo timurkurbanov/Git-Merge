@@ -1,0 +1,98 @@
+Provide one or more Django model queries that retrieve the requested data for each of the following:
+
+Find the albums recorded by the artist Queen.
+    Artist.objects.get(name='Queen')
+        <Artist: Artist object (51)>
+    Album.objects.filter(artist_id=51)
+        <QuerySet [<Album: Album object (32)>, <Album: Album object (181)>, <Album: Album object (182)>]>
+    [a.title for a in Album.objects.filter(artist_id=51)]  
+        ['Greatest Hits II', 'Greatest Hits I', 'News Of The World']
+Count how many tracks belong to the media type "Protected MPEG-4 video file".
+    MediaType.objects.get(name='Protected MPEG-4 video file') 
+        <MediaType: MediaType object (3)>
+    Track.objects.filter(media_type=3).count()  
+        214
+Find the genre with the name "Hip Hop/Rap".
+    Genre.objects.get(name='Hip Hop/Rap') 
+        <Genre: Genre object (17)>
+Count how many tracks belong to the "Hip Hop/Rap" genre
+    Track.objects.filter(genre=17).count()  
+        35
+Find the total amount of time required to listen to all the tracks in the database.
+    Track.objects.aggregate(Sum('milliseconds'))  
+        {'milliseconds__sum': 1377942652}
+Find the highest price of any track that has the media type "MPEG audio file".
+    MediaType.objects.get(name='MPEG audio file')  
+        <MediaType: MediaType object (1)>
+    Track.objects.filter(media_type=1).aggregate(Max('unit_price'))
+        {'unit_price__max': Decimal('0.99')}
+Find the name of the most expensive track that has the media type "MPEG audio file".
+    Track.objects.filter(media_type=1).order_by('-unit_price') 
+        <QuerySet [<Track: Track object (7)>, <Track: Track object (8)>, <Track: Track object (9)>, <Track: Track object (10)>, <Track: Track object (11)>, <Track: Track object (12)>, <Track: Track object (13)>, <Track: Track object (14)>, <Track: Track object (15)>, <Track: Track object (16)>, <Track: Track object (17)>, <Track: Track object (18)>, <Track: Track object (20)>, <Track: Track object (21)>, <Track: Track object (22)>, <Track: Track object (23)>, <Track: Track object (24)>, <Track: Track object (26)>, <Track: Track object (27)>, <Track: Track object (28)>, '...(remaining elements truncated)...']>
+        ['Put The Finger On You',
+        "Let's Get It Up",
+        'Inject The Venom',
+        'Snowballed',
+        'Evil Walks',
+        'C.O.D.',
+        'Breaking The Rules',
+        'Night Of The Long Knives',
+        'Spellbound',
+        'Go Down',
+        'Dog Eat Dog',
+        'Let There Be Rock',
+        'Bad Boy Boogie',
+        ...]    
+Find the 2 oldest artists.
+    Artist.objects.order_by('created_at')     
+        <QuerySet [<Artist: Artist object (258)>, <Artist: Artist object (31)>, <Artist: Artist object (86)>, <Artist: Artist object (208)>, <Artist: Artist object (83)>, <Artist: Artist object (195)>, <Artist: Artist object (143)>, <Artist: Artist object (20)>, <Artist: Artist object (229)>, <Artist: Artist object (152)>, <Artist: Artist object (29)>, <Artist: Artist object (244)>, <Artist: Artist object (204)>, <Artist: Artist object (210)>, <Artist: Artist object (168)>, <Artist: Artist object (107)>, <Artist: Artist object (91)>, <Artist: Artist object (49)>, <Artist: Artist object (36)>, <Artist: Artist object (44)>, '...(remaining elements truncated)...']>
+    [a.name for a in Artist.objects.order_by('created_at')]       
+        ['Les Arts Florissants & William Christie',
+        'Baby Consuelo',
+        'Funk Como Le Gusta',
+        'English Concert & Trevor Pinnock',
+        'Falamansa',
+        'Stereo Maracana',
+        ...]
+Find the least expensive track that has the genre "Electronica/Dance".
+    Genre.objects.get(name='Electronica/Dance') 
+        <Genre: Genre object (15)>
+    Track.objects.filter(genre=15).order_by('unit_price')       
+    [t.name for t in Track.objects.filter(genre=15).order_by('unit_price')]
+        ['Instinto Colectivo',
+        'Chapa o Coco',
+        'Prostituta',
+        'Eu So Queria Sumir',
+        'Tres Reis',
+        ...]
+Find all "MPEG audio file" tracks in the genre "Electronica/Dance".
+    Track.objects.filter(media_type=1).filter(genre=15)   
+    <QuerySet [<Track: Track object (3319)>, <Track: Track object (3320)>, <Track: Track object (3321)>, <Track: Track object (3322)>, <Track: Track object (3323)>, <Track: Track object (3324)>, <Track: Track object (3325)>, <Track: Track object (3327)>, <Track: Track object (3328)>, <Track: Track object (3329)>, <Track: Track object (3330)>, <Track: Track object (3331)>, <Track: Track object (3333)>, <Track: Track object (3334)>, <Track: Track object (3335)>, <Track: Track object (1456)>, <Track: Track object (1463)>, <Track: Track object (1455)>, <Track: Track object (3326)>, <Track: Track object (3332)>, '...(remaining elements truncated)...']>
+        ['Instinto Colectivo',
+        'Chapa o Coco',
+        'Prostituta',
+        'Eu So Queria Sumir',
+        'Tres Reis',
+        'Um Lugar ao Sol',
+        'Batalha Naval',
+        'O Misterio do Samba',
+        'Armadura',
+        'Na Ladeira',
+        'Carimbo',
+        'Catimbo',
+        'Chega no Suingue',
+        'Mun-Ra',
+        'Freestyle Love',
+        'Stillness In Time',
+        'Journey To Arnhemland',
+        'Just Another Story',
+        'Todo o Carnaval tem seu Fim',
+        'Funk de Bamba',
+        'Half The Man',
+        'Light Years',
+        'Manifest Destiny',
+        'The Kids',
+        'Mr. Moon',
+        'Scam',
+        'Morning Glory',
+        'Space Cowboy']
